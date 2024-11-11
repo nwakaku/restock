@@ -8,7 +8,7 @@ const AllStores = () => {
       name: "Cocacola",
       time: "delivery by 11:30am",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Cocacola-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2016/11/Shape-Coca-Cola-Logo.jpg",
       comment: "$10 off EBT, lots of deal",
     },
     {
@@ -35,7 +35,7 @@ const AllStores = () => {
       name: "Unilever",
       time: "delivery By 12:30pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Unilever-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2017/06/Unilever-logo-1024x645.jpg",
     },
     {
       name: "7up",

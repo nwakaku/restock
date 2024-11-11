@@ -143,7 +143,7 @@ export function ManageSubscriptions() {
                         <div className="flex items-center gap-3">
                           <div className="bg-success/10 p-2 rounded-lg">
                             {" "}
-                            <LuPackage className="h-5 w-5 text-success" />{" "}
+                            <LuPackage className="h-5 w-5 text-green-700" />{" "}
                           </div>
                           <div>
                             <h3 className="font-medium text-gray-800">

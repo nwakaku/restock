@@ -5,7 +5,7 @@ export const Grocery = () => {
     {
       title: "Choose what you want",
       description:
-        "Select items from your favorite grocery stores at Instacart.com or in the app.",
+        "Select items from your favorite groceries at Restock.ai or in the app.",
       image:
         "https://www.instacart.com/image-server/686x514/filters:fill(FFF,true):format(webp)/www.instacart.com/assets/homepage/choose-what-you-want-efca561a8f08c2a5ce5ed77df6c10bf54d4439ca8434f12e9d9641bf91dd2b43.jpg",
     },
@@ -19,7 +19,7 @@ export const Grocery = () => {
     {
       title: "Get your items same-day",
       description:
-        "Pick a convenient time for you. Enjoy Instacart's 100% quality guarantee on every order.",
+        "Pick a convenient time for you. Enjoy Restock's 100% quality guarantee on every order.",
       image:
         "https://www.instacart.com/image-server/686x514/filters:fill(FFF,true):format(webp)/www.instacart.com/assets/homepage/get-your-items-same-day-c85bb8474d3f09fe7eec97688767459f93852e29bf3fa849ab410f73d6f91b3a.jpg",
     },
@@ -40,7 +40,7 @@ export const Grocery = () => {
 
           <div className="lg:w-3/6 lg:px-8 px-2">
             <h2 className="font-extrabold lg:text-2xl mb-2">
-              Get the full restock.ai experience
+              Get the full Restock.ai experience
             </h2>
             <p className="text-xs lg:text-sm text-gray-700 lg:block ">
               Scan the QR code with your camera. First delivery is free

@@ -17,43 +17,43 @@ const Stores = () => {
       name: "Nestle",
       time: "By 11:45am",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Nestle-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2017/03/Nestle-Logo-768x432.png",
     },
     {
       name: "Chivita",
       time: "By 12:00pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Chivita-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731344408/dangote_s8las6.svg",
     },
     {
       name: "Cadbury",
       time: "By 12:15pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Cadbury-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2020/09/Cadbury-Logo-2003.jpg",
     },
     {
       name: "Cocacola",
       time: "By 12:30pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Cocacola-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2016/11/Shape-Coca-Cola-Logo.jpg",
     },
     {
       name: "Unilever",
       time: "By 1:00pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Unilever-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2017/06/Unilever-logo-1024x645.jpg",
     },
     {
-      name: "PZ Cusson",
+      name: "Pepsi",
       time: "By 1:15pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Pz-Cussons-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2017/05/Pepsi-logo-768x432.png",
     },
     {
-      name: "Rite",
+      name: "ShopRite",
       time: "By 1:30pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Rite-Foods-200x200.jpg",
+        "https://1000logos.net/wp-content/uploads/2024/02/ShopRite-Logo-768x432.jpg",
     },
     {
       name: "Nigerian B",

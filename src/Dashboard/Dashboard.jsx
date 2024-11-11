@@ -1,26 +1,24 @@
 import {
-  // LuSearch,
   LuShoppingCart,
   LuHome,
-  // LuUser,
-  // LuPlus,
-  // LuArrowRight,
+  
   LuSettings,
-  // LuChevronRight,
   LuTrendingUp,
-//   LuFileEdit,
+  LuLogOut,
 } from "react-icons/lu";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useMyContext } from "../context/MyContext";
+import supabaseUtil from "../../utils/supabase";
+import { useEffect } from "react";
 
 
 
-const Dashboard = () => {
+const Dashboard = () => {  
+
   return (
     <div className="min-h-screen bg-white text-base">
-      {/* Desktop Sidebar - Only visible on lg screens */}
       <DashboardSidebar/>
-      {/* <DashboardProp />
-      <MyOrders/> */}
+      
           
     <Outlet/>
     </div>
@@ -35,15 +33,36 @@ const DashboardSidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
 
+  const { user, setSession } = useMyContext();
+
+  console.log(user);
+  
+  useEffect(() => {
+    if (!user.user) { navigate("/") }; 
+  }, [user])
+  
+
+
   const navItems = [
     { icon: LuHome, label: "Dashboard", path: "/dashboard" },
     { icon: LuShoppingCart, label: "My Orders", path: "/dashboard/orders" },
-    { icon: LuTrendingUp, label: "Subscriptions", path: "/dashboard/subscriptions" },
+    {
+      icon: LuTrendingUp,
+      label: "Subscriptions",
+      path: "/dashboard/subscriptions",
+    },
     { icon: LuSettings, label: "Settings", path: "/dashboard/settings" },
+    { icon: LuLogOut, label: "Logout", path: "/"},
   ];
 
   const handleNavigation = (path) => {
     navigate(path);
+  };
+
+  const handleSignOut = async () => {
+    await supabaseUtil.auth.signOut();
+    setSession(null);
+    navigate("/")
   };
 
   return (
@@ -53,10 +72,16 @@ const DashboardSidebar = () => {
           {navItems.map((item) => (
             <button
               key={item.label}
-              onClick={() => handleNavigation(item.path)}
+              onClick={() => {
+                item.label === "Logout"
+                  ? handleSignOut(item.path)
+                  : handleNavigation(item.path);
+              }}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left ${
                 currentPath === item.path
                   ? "bg-gray-100 text-gray-600"
+                  : item.label === "Logout"
+                  ? "bg-red-50 text-red-400 hover:bg-red-100"
                   : "text-gray-600 hover:bg-gray-50"
               }`}>
               <item.icon className="h-5 w-5" />
@@ -69,12 +94,12 @@ const DashboardSidebar = () => {
         <div className="bg-blue-50 rounded-xl p-4">
           <div className="flex items-center space-x-3">
             <img
-              src="https://avatar.iran.liara.run/public"
+              src={user.avatar_url}
               alt="Profile"
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <p className="font-medium">Alex Smith</p>
+              <p className="font-medium">{user.full_name}</p>
               <p className="text-sm text-gray-600">Premium Member</p>
             </div>
           </div>

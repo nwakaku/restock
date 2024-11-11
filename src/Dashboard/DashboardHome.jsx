@@ -11,28 +11,23 @@ import {
   LuUser,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { useMyContext } from "../context/MyContext";
 
 export const DashboardHome = () => {
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+   const [inputValue, setInputValue] = useState("");
     const navigate = useNavigate();
+
+        const { user } = useMyContext();
+
     
     const handleCheckout = async () => {
       setIsLoading(true);
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    //   console.log({
-    //     items: cartItems,
-    //     totalAmount,
-    //     deliveryAddress,
-    //     deliveryTime,
-    //     paymentMethod,
-    //     saveSubscription,
-    //     specialInstructions,
-    //   });
-
       setIsLoading(false);
-      navigate("/aiList");
+      navigate(`/aiList?prompt=${encodeURIComponent(inputValue)}`);
     };
 
   return (
@@ -42,7 +37,9 @@ export const DashboardHome = () => {
       {/* Welcome Section */}
       <div className="px-4 sm:px-6 lg:px-8 py-6 bg-white border-b">
         <div>
-          <h1 className="text-xl font-bold sm:text-2xl">Hey, Alex 👋</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">
+            Hey, {user.full_name} 👋
+          </h1>
           <p className="text-gray-600 text-sm mt-1 hidden sm:block">
             Ready to create your smart shopping list?
           </p>
@@ -61,12 +58,16 @@ export const DashboardHome = () => {
                 type="text"
                 placeholder="Prompt: A month grocery for a bachelor with $2000 budget"
                 className="flex-1 p-4 rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                startContent={<LuSparkles className="text-yellow-500 w-5 h-5" />}
+                startContent={
+                  <LuSparkles className="text-yellow-500 w-5 h-5" />
+                }
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
               <Button
                 isLoading={isLoading}
                 onClick={handleCheckout}
-                className="bg-green-600 text-white py-4 px-8 rounded-xl font-medium hover:bg-green-700 transition-colors whitespace-nowrap">
+                className="bg-green-700 text-white py-4 px-8 rounded-xl font-medium hover:bg-green-700 transition-colors whitespace-nowrap">
                 Generate Smart Cart
               </Button>
             </div>

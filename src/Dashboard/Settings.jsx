@@ -15,6 +15,7 @@ import {
   LuFileEdit,
   LuPlus,
 } from "react-icons/lu";
+import { useMyContext } from "../context/MyContext";
 
 const SettingSection = ({ children, title, description }) => (
   <div className="border-b border-gray-200 py-6">
@@ -145,12 +146,13 @@ export const Settings = () => {
       isDefault: false,
     },
   ]);
+    
+    const { user } = useMyContext();
 
-  const [personalInfo] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+1 (555) 123-4567",
-  });
+
+    const [personalInfo] = useState(user);
+    
+    console.log(personalInfo);
 
   return (
     <div className="lg:ml-64 pt-0">
@@ -167,7 +169,7 @@ export const Settings = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm font-medium text-gray-500">Full Name</p>
-                <p className="mt-1">{personalInfo.name}</p>
+                <p className="mt-1">{personalInfo.full_name}</p>
               </div>
               <button className="text-green-600 text-sm font-medium">
                 Edit
@@ -187,7 +189,9 @@ export const Settings = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm font-medium text-gray-500">Phone</p>
-                <p className="mt-1">{personalInfo.phone}</p>
+                <p className="mt-1">
+                  {personalInfo.phone ? personalInfo.phone : "null"}
+                </p>
               </div>
               <button className="text-green-600 text-sm font-medium">
                 Edit
