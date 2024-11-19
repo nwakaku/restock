@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LuChevronRight,
   LuShoppingCart,
@@ -9,81 +9,53 @@ import {
   LuTruck,
   LuCheck,
 } from "react-icons/lu";
-
-// Mock data structure
-const mockOrders = [
-  {
-    id: "1234",
-    items: [
-      { name: "Organic Bananas", quantity: 1, price: 3.99 },
-      { name: "Whole Milk", quantity: 2, price: 4.99 },
-      { name: "Avocados", quantity: 3, price: 5.99 },
-    ],
-    status: "delivered",
-    orderDate: "2024-03-15T10:30:00",
-    total: 54.99,
-    deliveryTime: "2:00 PM - 3:00 PM",
-    trackingSteps: ["ordered", "preparing", "on_the_way", "delivered"],
-  },
-  {
-    id: "1235",
-    items: [
-      { name: "Fresh Strawberries", quantity: 1, price: 6.99 },
-      { name: "Greek Yogurt", quantity: 2, price: 4.5 },
-    ],
-    status: "on_the_way",
-    orderDate: "2024-03-15T11:45:00",
-    total: 42.5,
-    deliveryTime: "3:00 PM - 4:00 PM",
-    trackingSteps: ["ordered", "preparing", "on_the_way"],
-  },
-  {
-    id: "1236",
-    items: [
-      { name: "Organic Eggs", quantity: 1, price: 5.99 },
-      { name: "Whole Grain Bread", quantity: 1, price: 4.99 },
-      { name: "Baby Spinach", quantity: 1, price: 3.99 },
-    ],
-    status: "preparing",
-    orderDate: "2024-03-15T12:15:00",
-    total: 38.99,
-    deliveryTime: "4:00 PM - 5:00 PM",
-    trackingSteps: ["ordered", "preparing"],
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { useMyContext } from "../context/MyContext";
+import supabaseUtil from "../utils/supabase";
+import BottomNav from "../components/BottomNav";
 
 const getStatusColor = (status) => {
   const colors = {
-    preparing: "bg-yellow-100 text-yellow-800",
+    pending: "bg-yellow-100 text-yellow-800",
+    processing: "bg-blue-100 text-blue-800",
     on_the_way: "bg-blue-100 text-blue-800",
     delivered: "bg-green-100 text-green-800",
+    cancelled: "bg-red-100 text-red-800"
   };
   return colors[status] || "bg-gray-100 text-gray-800";
 };
 
 const getStatusText = (status) => {
   const texts = {
-    preparing: "Preparing",
+    pending: "Pending",
+    processing: "Processing",
     on_the_way: "On the way",
     delivered: "Delivered",
+    cancelled: "Cancelled"
   };
   return texts[status] || status;
 };
 
 const TrackingProgress = ({ steps, currentStep }) => {
+
+  console.log(steps);
+  
   const stepIcons = {
-    ordered: LuClock,
-    preparing: LuPackage,
+    pending: LuClock,
+    processing: LuPackage,
     on_the_way: LuTruck,
     delivered: LuCheck,
   };
 
+  const allSteps = ["pending", "processing", "on_the_way", "delivered"];
+  const currentStepIndex = allSteps.indexOf(currentStep);
+
   return (
     <div className="flex items-center w-full mt-4">
-      {steps.map((step, index) => {
+      {allSteps.map((step, index) => {
         const Icon = stepIcons[step];
-        const isCompleted = steps.indexOf(currentStep) >= index;
-        const isLast = index === steps.length - 1;
+        const isCompleted = currentStepIndex >= index;
+        const isLast = index === allSteps.length - 1;
 
         return (
           <React.Fragment key={step}>
@@ -98,9 +70,6 @@ const TrackingProgress = ({ steps, currentStep }) => {
                   }`}
                 />
               </div>
-              {/* <span className="text-xs mt-1 text-gray-500 capitalize">
-                {step.replace("_", " ")}
-              </span> */}
             </div>
             {!isLast && (
               <div
@@ -116,7 +85,7 @@ const TrackingProgress = ({ steps, currentStep }) => {
   );
 };
 
-const OrderCard = ({ order }) => {
+const OrderCard = ({ order, onReorder }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -126,10 +95,10 @@ const OrderCard = ({ order }) => {
           <div className="bg-green-50 p-2 rounded-lg">
             <LuShoppingCart className="h-5 w-5 text-green-600" />
           </div>
-          <h3 className="font-medium">Order #{order.id}</h3>
+          <h3 className="font-medium">Order #{order.id.toString().slice(0,4)}</h3>
         </div>
         <span className="text-sm text-gray-500">
-          {new Date(order.orderDate).toLocaleTimeString([], {
+          {new Date(order.created_at).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           })}
@@ -138,7 +107,7 @@ const OrderCard = ({ order }) => {
 
       <div className="space-y-2">
         <p className="text-sm text-gray-600">
-          {order.items.length} items • ${order.total.toFixed(2)}
+          {order.items.length} items • ₦{order.total_amount.toFixed(2)}
         </p>
         <div className="flex items-center space-x-2">
           <span
@@ -150,7 +119,6 @@ const OrderCard = ({ order }) => {
         </div>
 
         <TrackingProgress
-          steps={order.trackingSteps}
           currentStep={order.status}
         />
 
@@ -175,22 +143,25 @@ const OrderCard = ({ order }) => {
                     {item.quantity}x {item.name}
                   </span>
                   <span className="text-gray-600">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ₦{(item.price * item.quantity).toFixed(2)}
                   </span>
                 </div>
               ))}
             </div>
             <div className="space-y-1">
               <h4 className="font-medium text-sm">Delivery Time</h4>
-              <p className="text-sm text-gray-600">{order.deliveryTime}</p>
+              <p className="text-sm text-gray-600">{order.delivery_time}</p>
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-medium text-sm">Delivery Address</h4>
+              <p className="text-sm text-gray-600">{order.delivery_address}</p>
             </div>
             <Button
               size="sm"
               color="success"
               variant="flat"
-              className={"w-full mt-2"}
-              //   onClick={() => addToCart(item)}
-            >
+              className="w-full mt-2"
+              onClick={() => onReorder(order.items)}>
               Reorder
             </Button>
           </div>
@@ -201,6 +172,37 @@ const OrderCard = ({ order }) => {
 };
 
 export const MyOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
+  const { session, setCartItems } = useMyContext();
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const { data, error } = await supabaseUtil
+          .from("orders")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setOrders(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    if (session?.user?.id) {
+      fetchOrders();
+    }
+  }, [session?.user?.id]);
+
+  const handleReorder = (items) => {
+    setCartItems(items);
+    navigate("/aiList");
+  };
+
+
   return (
     <div className="lg:ml-64 pt-0">
       <div className="px-4 sm:px-6 lg:px-8 py-6 bg-white border-b">
@@ -208,20 +210,20 @@ export const MyOrders = () => {
       </div>
       <main className="px-4 sm:px-6 lg:px-8 py-6 pb-24 lg:pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 className="text-lg font-medium">Recent Orders</h2>
-            <button className="text-green-600 text-sm font-medium flex items-center space-x-1">
-              <span>View All</span>
-              <LuChevronRight className="h-4 w-4" />
-            </button>
-          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {mockOrders.map((order) => (
-              <OrderCard key={order.id} order={order} />
+            {orders.map((order) => (
+              <OrderCard 
+                key={order.id} 
+                order={order} 
+                onReorder={handleReorder}
+              />
             ))}
           </div>
         </div>
       </main>
+      
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 };

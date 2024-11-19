@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   Modal,
   ModalContent,
@@ -19,8 +19,7 @@ import {
   LuPlus,
 } from "react-icons/lu";
 import { FiMinus, FiPlus, FiX } from "react-icons/fi";
-import { sampleLists } from "../data/dummyList";
-
+// import { sampleLists } from "../data/dummyList";
 
 const AddItemModal = ({ isOpen, onClose, onAdd }) => {
   const [newItem, setNewItem] = useState({
@@ -150,7 +149,7 @@ const CategorySection = ({
               <div className="flex-1">
                 <h4 className="font-medium">{item.name}</h4>
                 <p className="text-sm text-gray-600">
-                  ${item.price.toLocaleString()} per {item.unit}
+                  ₦{item.price.toLocaleString()} per {item.unit}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -208,6 +207,28 @@ const AIPromptModal = ({ isOpen, onClose, prompt, onConfirm }) => {
   const [editingItem, setEditingItem] = useState(null);
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [listName, setListName] = useState("");
+  const [error, setError] = useState(null);
+
+  const callSambanovaAPI = async (userPrompt) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/generate-list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: userPrompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API call failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw new Error(`Failed to call API: ${error.message}`);
+    }
+  };
 
   // Add this utility function at the top of your file
   const calculateTotalCost = (items) => {
@@ -237,32 +258,77 @@ const AIPromptModal = ({ isOpen, onClose, prompt, onConfirm }) => {
     }
   };
 
-  useEffect(() => {
-    if (loading) {
-      const timer = setInterval(() => {
-        setProgress((prev) => {
-          const newProgress = prev + 10;
-          if (newProgress >= 100) {
-            clearInterval(timer);
-            setLoading(false);
-            // Simulate AI response by selecting a random sample list
-            const samples = Object.values(sampleLists);
-            setGeneratedList(
-              samples[Math.floor(Math.random() * samples.length)]
-            );
-          }
-          return newProgress;
-        });
+
+  const extractJSONFromResponse = (response) => {
+    try {
+      // Find JSON content between triple backticks
+      const jsonMatch = response.match(/```json\n([\s\S]*?)\n```/);
+      if (jsonMatch && jsonMatch[1]) {
+        // Parse the extracted JSON
+        return JSON.parse(jsonMatch[1]);
+      }
+
+      // If no JSON found between backticks, try to find array directly
+      const arrayMatch = response.match(/\[\s*\{[\s\S]*\}\s*\]/);
+      if (arrayMatch) {
+        return JSON.parse(arrayMatch[0]);
+      }
+
+      throw new Error("No valid JSON found in response");
+    } catch (error) {
+      console.error("JSON parsing error:", error);
+      throw new Error("Failed to parse API response");
+    }
+  };
+
+  const handleGenerateList = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setProgress(0);
+
+    try {
+      // Start progress animation
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 10, 90));
       }, 500);
 
-      return () => clearInterval(timer);
-    }
-  }, [loading]);
+      const apiResponse = await callSambanovaAPI(prompt);
 
-  const handleGenerateList = () => {
-    setLoading(true);
-    setProgress(0);
-  };
+      // Extract the items array from the response
+      const items = extractJSONFromResponse(
+        apiResponse.choices[0].message.content
+      );
+
+      // Format the list
+      const formattedList = {
+        name: listName || "AI Generated List",
+        items: items.map((item) => ({
+          ...item,
+          id: `ai-${Date.now()}-${item.id}`,
+          price: parseFloat(item.price),
+          quantity: parseInt(item.quantity) || 1,
+          unit: item.unit || "piece",
+          image:
+            "https://cdn.arabsstock.com/uploads/images/156537/image-156537-various-goods-foodstuffs-supermarket-shelves-purchasing-thumbnail.webp",
+        })),
+        budget: 0,
+        totalItems: items.length,
+      };
+
+      // Calculate total cost
+      formattedList.totalCost = calculateTotalCost(formattedList.items);
+
+      // Clear progress interval and set final state
+      clearInterval(progressInterval);
+      setProgress(100);
+      setGeneratedList(formattedList);
+    } catch (error) {
+      setError(`Failed to generate list: ${error.message}`);
+      console.error("API Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [prompt, listName]);
 
   // Update the handleUpdateQuantity function
   const handleUpdateQuantity = (itemId, newQuantity) => {
@@ -373,6 +439,12 @@ const AIPromptModal = ({ isOpen, onClose, prompt, onConfirm }) => {
                     onDeleteItem={handleDeleteItem}
                     onEditItem={handleEditItem}
                   />
+                </div>
+              )}
+
+              {error && (
+                <div className="bg-red-50 p-4 rounded-lg">
+                  <p className="text-red-600">{error}</p>
                 </div>
               )}
 

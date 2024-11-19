@@ -22,15 +22,17 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { FaSearch, FaShoppingCart, FaBars, FaBell } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaBell } from "react-icons/fa";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { LuMapPin } from "react-icons/lu";
+import { LuMapPin, LuMenu, LuSparkles } from "react-icons/lu";
 import { useMyContext } from "../context/MyContext";
-import supabaseUtil from "../../utils/supabase";
+import supabaseUtil from "../utils/supabase";
+import AIPromptModal from "./AIPromptModal";
+import { FiSearch } from "react-icons/fi";
 
-const nigerianPlacesBaseUrl = "https://api-nigerianplaces.onrender.com";
+const nigerianPlacesBaseUrl = import.meta.env.VITE_NIGERIAN_PLACES_API;
 
 const sendHttpRequest = async (config, callback) => {
   try {
@@ -45,14 +47,27 @@ const sendHttpRequest = async (config, callback) => {
 
 const Header = () => {
   const navigate = useNavigate();
-  const { session, setSession, cartItems } = useMyContext();
+  const { session, setSession, cartItems, setShowCart, showCart } = useMyContext();
   const [notificationCount, setNotificationCount] = useState(0);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { setUser } = useMyContext();
+  const { setUser, isAIMode, setIsAIMode, setCartItems, setSelectedTags } =
+    useMyContext();
   const [selectedKeys, setSelectedKeys] = useState(new Set(["Abuja"]));
   const [nigerianStates, setNigerianStates] = useState([]);
   const [selectedValue, setSelectedValue] = useState("Abuja");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
 
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const prompt = searchParams.get("prompt");
+    if (prompt) {
+      setSearchQuery(prompt);
+      setIsAIMode(true);
+      setIsPromptModalOpen(true);
+    }
+  }, [searchParams, setIsAIMode]);
 
   useEffect(() => {
     const handleSession = () => {
@@ -125,21 +140,79 @@ const Header = () => {
     navigate("/dashboard");
   };
 
+  const handleGenerateAIList = (generatedList) => {
+    // Add the generated items to the cart
+    if (generatedList && generatedList.items) {
+      // Add all items from the generated list to the cart
+      setCartItems((prev) => {
+        const newItems = generatedList.items.map((item) => ({
+          ...item,
+          image:
+            item.image ||
+            "https://cdn.arabsstock.com/uploads/images/156537/image-156537-various-goods-foodstuffs-supermarket-shelves-purchasing-thumbnail.webp",
+        }));
+
+        // Merge with existing items, combining quantities for duplicates
+        const mergedItems = [...prev];
+        newItems.forEach((newItem) => {
+          const existingItemIndex = mergedItems.findIndex(
+            (item) => item.id === newItem.id
+          );
+          if (existingItemIndex !== -1) {
+            mergedItems[existingItemIndex] = {
+              ...mergedItems[existingItemIndex],
+              quantity:
+                mergedItems[existingItemIndex].quantity + newItem.quantity,
+            };
+          } else {
+            mergedItems.push(newItem);
+          }
+        });
+
+        return mergedItems;
+      });
+
+      // Add the list name as a tag if it's not already present
+      if (generatedList.name) {
+        setSelectedTags((prev) => {
+          if (!prev.includes(generatedList.name)) {
+            return [...prev, generatedList.name];
+          }
+          return prev;
+        });
+      }
+    }
+
+    // Close the modal and clear the search
+    setIsPromptModalOpen(false);
+    setSearchQuery("");
+  };
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && isAIMode && searchQuery.trim()) {
+      setIsPromptModalOpen(true);
+    }
+  };
+
   return (
     <>
       <Navbar maxWidth="2xl" className="py-2 bg-white shadow-md">
         <NavbarBrand>
-          <div
-            onClick={handleRoute}
-            className="flex justify-center items-center space-x-2 cursor-pointer">
-            <FaBars size={20} className="text-green-900" />
-            <span className="flex">
+          <div className="flex justify-center items-center space-x-2 cursor-pointer">
+            <div
+              onClick={handleCartClick}
+              className="p-2 rounded-xl border-1 border-green-700">
+              <LuMenu size={20} />
+            </div>
+
+            <span className="flex" onClick={handleRoute}>
               <Image
+                className=" lg:hidden"
                 src="https://res.cloudinary.com/dgbreoalg/image/upload/v1730492969/apron_z9z60j.png"
                 width={30}
               />
               <h2 className="font-extrabold hidden lg:flex text-inherit text-2xl text-green-900">
-                restock.ai
+                <span className="text-green-700">Res</span>tock.ai
               </h2>
             </span>
           </div>
@@ -157,8 +230,21 @@ const Header = () => {
                 inputWrapper:
                   "h-full font-normal ring-1 ring-gray-300 text-default-500 bg-default-400/20 dark:bg-default-500/20",
               }}
-              placeholder="search product and services..."
-              startContent={<FaSearch size={24} className="text-gray-500" />}
+              placeholder={
+                isAIMode
+                  ? "Prompt: A month grocery for a bachelor with $2000 budget"
+                  : "Search for groceries..."
+              }
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
+              startContent={
+                isAIMode ? (
+                  <LuSparkles className="text-[#FFDF00] w-5 h-5" />
+                ) : (
+                  <FiSearch className="text-gray-400 w-5 h-5" />
+                )
+              }
               type="search"
             />
           </NavbarItem>
@@ -169,7 +255,10 @@ const Header = () => {
                   startContent={<LuMapPin size={24} />}
                   variant="light"
                   className="capitalize rounded-full font-semibold text-base">
-                  <p>{selectedValue || "Select State"}, Nigeria</p>
+                  <p>
+                    {selectedValue || "Select State"}{" "}
+                    <span className="hidden lg:block">,Nigeria</span>{" "}
+                  </p>
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -245,7 +334,7 @@ const Header = () => {
               </NavbarItem>
               <NavbarItem className="flex">
                 <Button
-                  onClick={handleCartClick}
+                  onClick={() => setShowCart(!showCart)}
                   variant="flat"
                   className="rounded-full lg:p-4 text-white bg-green-700 relative">
                   <FaShoppingCart size={18} />
@@ -297,6 +386,13 @@ const Header = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      <AIPromptModal
+        isOpen={isPromptModalOpen}
+        onClose={() => setIsPromptModalOpen(false)}
+        prompt={searchQuery}
+        onConfirm={handleGenerateAIList}
+      />
     </>
   );
 };

@@ -1,21 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { Card } from "@nextui-org/react";
-import { useState } from "react";
+import { Card, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import { useState, useEffect, useCallback } from "react";
 import {
-//   LuUser,
-//   LuBell,
-//   LuCreditCard,
-//   LuHome,
-//   LuShield,
-//   LuToggleLeft,
-//   LuToggleRight,
   LuChevronRight,
-//   LuMail,
-//   LuPhone,
   LuFileEdit,
   LuPlus,
 } from "react-icons/lu";
 import { useMyContext } from "../context/MyContext";
+import supabaseUtil from "../utils/supabase";
+import BottomNav from "../components/BottomNav";
+
 
 const SettingSection = ({ children, title, description }) => (
   <div className="border-b border-gray-200 py-6">
@@ -78,7 +73,7 @@ const PaymentMethodCard = ({ method, isDefault, onEdit, onSetDefault }) => (
   <div className="bg-white border rounded-lg p-4 mb-4">
     <div className="flex justify-between items-start">
       <div>
-        <p className="font-medium">•••• •••• •••• {method.lastFour}</p>
+        <p className="font-medium">•••• •••• •••• {method.last_four}</p>
         <p className="text-sm text-gray-600 mt-1">Expires {method.expiry}</p>
         {isDefault && (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-2">
@@ -103,7 +98,16 @@ const PaymentMethodCard = ({ method, isDefault, onEdit, onSetDefault }) => (
 );
 
 export const Settings = () => {
-  const [notifications, setNotifications] = useState({
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const {  user, refreshUser, session } = useMyContext();
+  const [editItem, setEditItem] = useState(null);
+  
+  // States from database
+  const [addresses, setAddresses] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [notifications, setNotifications] = useState(session?.user?.notification_preferences || {
     email: true,
     push: true,
     sms: false,
@@ -111,48 +115,216 @@ export const Settings = () => {
     promotions: false,
   });
 
-  const [addresses] = useState([
-    {
-      id: 1,
-      name: "Home",
-      street: "123 Main St",
-      city: "San Francisco",
-      state: "CA",
-      zip: "94105",
-      isDefault: true,
-    },
-    {
-      id: 2,
-      name: "Work",
-      street: "456 Market St",
-      city: "San Francisco",
-      state: "CA",
-      zip: "94105",
-      isDefault: false,
-    },
-  ]);
+  const [formData, setFormData] = useState({});
 
-  const [paymentMethods] = useState([
-    {
-      id: 1,
-      lastFour: "4242",
-      expiry: "12/24",
-      isDefault: true,
-    },
-    {
-      id: 2,
-      lastFour: "5678",
-      expiry: "03/25",
-      isDefault: false,
-    },
-  ]);
-    
-    const { user } = useMyContext();
+  // Add these new state and handler functions after the existing state declarations
+  const [editingField, setEditingField] = useState(null);
+  const [fieldValue, setFieldValue] = useState("");
 
+  const handleEditField = (field, value) => {
+    setEditingField(field);
+    setFieldValue(value || "");
+    setIsModalOpen(true);
+  };
 
-    const [personalInfo] = useState(user);
-    
-    console.log(personalInfo);
+  const handleUpdateProfile = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabaseUtil
+        .from("profiles")
+        .update({ [editingField]: fieldValue })
+        .eq("id", session?.user?.id);
+
+      if (error) throw error;
+      
+      await refreshUser(); // Refresh user context
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+    setLoading(false);
+  };
+
+  // Move these function definitions before the useEffect
+  const fetchAddresses = useCallback(async () => {
+    try {
+      const { data, error } = await supabaseUtil
+        .from('profiles')
+        .select('addresses')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      setAddresses(data.addresses || []);
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    }
+  }, [user.id]);
+
+  const fetchPaymentMethods = useCallback(async () => {
+    try {
+      const { data, error } = await supabaseUtil
+        .from('profiles')
+        .select('payment_methods')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      setPaymentMethods(data.payment_methods || []);
+    } catch (error) {
+      console.error('Error fetching payment methods:', error);
+    }
+  }, [user.id]);
+
+  // Then the useEffect
+  useEffect(() => {
+    fetchAddresses();
+    fetchPaymentMethods();
+    refreshUser();
+  }, [fetchAddresses, fetchPaymentMethods]);
+
+  // Update notification preferences
+  const handleNotificationChange = async (key, value) => {
+    const newPreferences = { ...notifications, [key]: value };
+    setNotifications(newPreferences);
+
+    try {
+      const { error } = await supabaseUtil
+        .from('profiles')
+        .update({ notification_preferences: newPreferences })
+        .eq('id', session?.user?.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating notifications:', error);
+      setNotifications(notifications); // Revert on error
+    }
+  };
+
+  // Update address operations
+  const handleAddressUpdate = async (isNew = false) => {
+    setLoading(true);
+    try {
+      const newAddress = {
+        id: isNew ? crypto.randomUUID() : editItem.id,
+        name: formData.name,
+        street: formData.street,
+        city: formData.city,
+        state: formData.state,
+        zip: formData.zip,
+        is_default: formData.is_default || false,
+      };
+
+      let updatedAddresses;
+      if (isNew) {
+        updatedAddresses = [...addresses, newAddress];
+      } else {
+        updatedAddresses = addresses.map(addr => 
+          addr.id === editItem.id ? newAddress : addr
+        );
+      }
+
+      const { error } = await supabaseUtil
+        .from('profiles')
+        .update({ addresses: updatedAddresses })
+        .eq('id', session?.user?.id);
+
+      if (error) throw error;
+      setAddresses(updatedAddresses);
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error updating address:', error);
+    }
+    setLoading(false);
+  };
+
+  // Update payment method operations
+  const handlePaymentMethodUpdate = async (isNew = false) => {
+    setLoading(true);
+    try {
+      const newPaymentMethod = {
+        id: isNew ? crypto.randomUUID() : editItem.id,
+        last_four: formData.last_four,
+        expiry: formData.expiry,
+        is_default: formData.is_default || false,
+      };
+
+      let updatedPaymentMethods;
+      if (isNew) {
+        updatedPaymentMethods = [...paymentMethods, newPaymentMethod];
+      } else {
+        updatedPaymentMethods = paymentMethods.map(method => 
+          method.id === editItem.id ? newPaymentMethod : method
+        );
+      }
+
+      const { error } = await supabaseUtil
+        .from('profiles')
+        .update({ payment_methods: updatedPaymentMethods })
+        .eq('id', session?.user?.id);
+
+      if (error) throw error;
+      setPaymentMethods(updatedPaymentMethods);
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error updating payment method:', error);
+    }
+    setLoading(false);
+  };
+
+  // Modal handlers
+  const handleOpenModal = (type, item = null) => {
+    setModalType(type);
+    setEditItem(item);
+    setFormData(item || {});
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalType(null);
+    setEditItem(null);
+    setFormData({});
+  };
+
+  // Update default handlers
+  const handleSetDefaultAddress = async (addressId) => {
+    try {
+      const updatedAddresses = addresses.map(addr => ({
+        ...addr,
+        is_default: addr.id === addressId
+      }));
+
+      const { error } = await supabaseUtil
+        .from('profiles')
+        .update({ addresses: updatedAddresses })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      setAddresses(updatedAddresses);
+    } catch (error) {
+      console.error('Error setting default address:', error);
+    }
+  };
+
+  const handleSetDefaultPayment = async (paymentId) => {
+    try {
+      const updatedPaymentMethods = paymentMethods.map(method => ({
+        ...method,
+        is_default: method.id === paymentId
+      }));
+
+      const { error } = await supabaseUtil
+        .from('profiles')
+        .update({ payment_methods: updatedPaymentMethods })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      setPaymentMethods(updatedPaymentMethods);
+    } catch (error) {
+      console.error('Error setting default payment method:', error);
+    }
+  };
 
   return (
     <div className="lg:ml-64 pt-0">
@@ -169,9 +341,11 @@ export const Settings = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm font-medium text-gray-500">Full Name</p>
-                <p className="mt-1">{personalInfo.full_name}</p>
+                <p className="mt-1">{user.full_name}</p>
               </div>
-              <button className="text-green-600 text-sm font-medium">
+              <button 
+                onClick={() => handleEditField('full_name', user.full_name)}
+                className="text-green-600 text-sm font-medium">
                 Edit
               </button>
             </div>
@@ -179,9 +353,11 @@ export const Settings = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm font-medium text-gray-500">Email</p>
-                <p className="mt-1">{personalInfo.email}</p>
+                <p className="mt-1">{user.email}</p>
               </div>
-              <button className="text-green-600 text-sm font-medium">
+              <button 
+                onClick={() => handleEditField('email', user.email)}
+                className="text-green-600 text-sm font-medium">
                 Edit
               </button>
             </div>
@@ -189,11 +365,11 @@ export const Settings = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm font-medium text-gray-500">Phone</p>
-                <p className="mt-1">
-                  {personalInfo.phone ? personalInfo.phone : "null"}
-                </p>
+                <p className="mt-1">{user.phone || "Not set"}</p>
               </div>
-              <button className="text-green-600 text-sm font-medium">
+              <button 
+                onClick={() => handleEditField('phone', user.phone)}
+                className="text-green-600 text-sm font-medium">
                 Edit
               </button>
             </div>
@@ -214,9 +390,7 @@ export const Settings = () => {
               </div>
               <Toggle
                 enabled={notifications.email}
-                onChange={(enabled) =>
-                  setNotifications({ ...notifications, email: enabled })
-                }
+                onChange={(enabled) => handleNotificationChange('email', enabled)}
               />
             </div>
 
@@ -229,9 +403,7 @@ export const Settings = () => {
               </div>
               <Toggle
                 enabled={notifications.push}
-                onChange={(enabled) =>
-                  setNotifications({ ...notifications, push: enabled })
-                }
+                onChange={(enabled) => handleNotificationChange('push', enabled)}
               />
             </div>
 
@@ -244,9 +416,7 @@ export const Settings = () => {
               </div>
               <Toggle
                 enabled={notifications.sms}
-                onChange={(enabled) =>
-                  setNotifications({ ...notifications, sms: enabled })
-                }
+                onChange={(enabled) => handleNotificationChange('sms', enabled)}
               />
             </div>
           </div>
@@ -261,14 +431,16 @@ export const Settings = () => {
               <AddressCard
                 key={address.id}
                 address={address}
-                isDefault={address.isDefault}
-                onEdit={() => console.log("Edit address:", address.id)}
-                onSetDefault={() =>
-                  console.log("Set default address:", address.id)
-                }
+                isDefault={address.is_default}
+                onEdit={() => handleOpenModal('address', address)}
+                onSetDefault={async () => {
+                  await handleSetDefaultAddress(address.id);
+                }}
               />
             ))}
-            <button className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-700 flex items-center justify-center">
+            <button 
+              onClick={() => handleOpenModal('address')}
+              className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-700 flex items-center justify-center">
               <LuPlus className="h-5 w-5 mr-2" />
               Add New Address
             </button>
@@ -284,14 +456,16 @@ export const Settings = () => {
               <PaymentMethodCard
                 key={method.id}
                 method={method}
-                isDefault={method.isDefault}
-                onEdit={() => console.log("Edit payment method:", method.id)}
-                onSetDefault={() =>
-                  console.log("Set default payment method:", method.id)
-                }
+                isDefault={method.is_default}
+                onEdit={() => handleOpenModal('payment', method)}
+                onSetDefault={async () => {
+                  await handleSetDefaultPayment(method.id);
+                }}
               />
             ))}
-            <button className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-700 flex items-center justify-center">
+            <button 
+              onClick={() => handleOpenModal('payment')}
+              className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-700 flex items-center justify-center">
               <LuPlus className="h-5 w-5 mr-2" />
               Add New Payment Method
             </button>
@@ -325,6 +499,103 @@ export const Settings = () => {
           </div>
         </SettingSection>
       </Card>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
+
+      {/* Add Modal with dynamic content based on modalType */}
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader>
+                {modalType ? (
+                  modalType === 'address' ? (editItem ? 'Edit Address' : 'Add New Address') : 
+                  modalType === 'payment' ? (editItem ? 'Edit Payment Method' : 'Add Payment Method') : 
+                  'Form'
+                ) : (
+                  `Edit ${editingField?.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`
+                )}
+              </ModalHeader>
+              <ModalBody>
+                {modalType === 'address' && (
+                  <div className="space-y-4">
+                    <Input
+                      label="Name"
+                      value={formData.name || ''}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
+                    <Input
+                      label="Street Address" 
+                      value={formData.street || ''}
+                      onChange={(e) => setFormData({...formData, street: e.target.value})}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input
+                        label="City"
+                        value={formData.city || ''}
+                        onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      />
+                      <Input
+                        label="State"
+                        value={formData.state || ''}
+                        onChange={(e) => setFormData({...formData, state: e.target.value})}
+                      />
+                    </div>
+                    <Input
+                      label="ZIP Code"
+                      value={formData.zip || ''}
+                      onChange={(e) => setFormData({...formData, zip: e.target.value})}
+                    />
+                  </div>
+                )}
+                {modalType === 'payment' && (
+                  <div className="space-y-4">
+                    <Input
+                      label="Last 4 Digits"
+                      maxLength={4}
+                      value={formData.last_four || ''}
+                      onChange={(e) => setFormData({...formData, last_four: e.target.value})}
+                    />
+                    <Input
+                      label="Expiry Date"
+                      placeholder="MM/YY"
+                      value={formData.expiry || ''}
+                      onChange={(e) => setFormData({...formData, expiry: e.target.value})}
+                    />
+                  </div>
+                )}
+                {!modalType && editingField && (
+                  <Input
+                    label={editingField?.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    value={fieldValue}
+                    onChange={(e) => setFieldValue(e.target.value)}
+                  />
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={handleCloseModal}>
+                  Cancel
+                </Button>
+                <Button 
+                  color="primary" 
+                  onPress={() => {
+                    if (modalType === 'address') {
+                      handleAddressUpdate(!editItem);
+                    } else if (modalType === 'payment') {
+                      handlePaymentMethodUpdate(!editItem);
+                    } else {
+                      handleUpdateProfile();
+                    }
+                  }}
+                  isLoading={loading}>
+                  {editItem ? 'Update' : 'Add'}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

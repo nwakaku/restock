@@ -15,53 +15,53 @@ const AllStores = () => {
       name: "Dangote",
       time: "delivery By 11:45am",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Dangote-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731344408/dangote_s8las6.svg",
       comment: "EBT, bulk pricing ",
     },
     {
       name: "Nestle",
       time: "delivery By 12:00pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Nestle-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406359/Nestle-Logo_xmbsay.png",
       comment: "$15 off in-store prices EBT",
     },
     {
-      name: "Chivita",
+      name: "Peak",
       time: "delivery By 12:15pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Chivita-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406277/Peak_r9dwgu.webp",
     },
     {
       name: "Unilever",
       time: "delivery By 12:30pm",
       image:
-        "https://1000logos.net/wp-content/uploads/2017/06/Unilever-logo-1024x645.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406009/Unilever-logo_mo5nuu.jpg",
     },
     {
-      name: "7up",
+      name: "Power Pasta",
       time: "delivery By 1:00pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/7up-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406239/dufil_nqhv0b.jpg",
       comment: "$10 off EBT, lots of deal",
     },
     {
       name: "Rite Foods",
       time: "delivery By 1:15pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Rite-Foods-200x200.jpg",
+        "https://pbs.twimg.com/profile_images/1491382990110445572/rNJJndh7_400x400.jpg",
       comment: "$30 off ",
     },
     {
-      name: "Pz Cussons",
+      name: "Golden Penny",
       time: "delivery By 1:30pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Pz-Cussons-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406466/goldenpenny_ebcbhl.jpg",
     },
     {
-      name: "Cadbury",
+      name: "Pepsi",
       time: "delivery By 2:00pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Cadbury-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406070/Pepsi1_kvo4lz.jpg",
     },
   ];
     

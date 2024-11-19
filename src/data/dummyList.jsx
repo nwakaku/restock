@@ -4,49 +4,49 @@ export const suggestedItems = [
     name: "Olive Oil",
     image:
       "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_691b69ef-443b-4877-a6a2-dcac47144457.jpeg",
-    price: 12.99,
+    price: 12990,
   },
   {
     id: "Garlic",
     name: "Garlic",
     image:
       "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_ee41b6c1-96dc-4250-a974-9df18382041f.jpeg",
-    price: 1.99,
+    price: 1990,
   },
   {
     id: "Parmesan",
     name: "Parmesan",
     image:
       "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_dfe7b80a-72a1-4115-9189-6213f9fda985.jpeg",
-    price: 8.99,
+    price: 8990,
   },
   {
     id: "Basil",
     name: "Basil",
     image:
       "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_b8073b49-7ed5-4979-b3d0-4eefdb10d95f.jpeg",
-    price: 2.99,
+    price: 2990,
   },
   {
     id: "Carrot",
     name: "Carrot",
     image:
       "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_369bec92-4389-476b-8e1f-2b0f15698af2.jpeg",
-    price: 5.99,
+    price: 5990,
   },
   {
     id: "Oroweat Whole Wheat",
     name: "Oroweat Whole Wheat",
     image:
       "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_f29b39c3-0903-4288-8bd3-f26da58f3242.png",
-    price: 4.69,
+    price: 4690,
   },
   {
     id: "Basmatic",
     name: "Basmatic",
     image:
       "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_7a1d3c4d-6771-422f-b18f-de2208a70fed.jpeg",
-    price: 2.99,
+    price: 2990,
     unit: 12,
   },
   {
@@ -54,28 +54,28 @@ export const suggestedItems = [
     name: "Lucerne Milk, Whole",
     image:
       "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_61b1f95c-0904-425a-b707-4c3b278be6c6.jpeg",
-    price: 6.99,
+    price: 6990,
   },
   {
     id: "Chilled Chicken Tenders",
     name: "Chilled Chicken Tenders",
     image:
       "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_1950f237-7672-45f6-8d25-ac0dd328988a.jpeg",
-    price: 14.09,
+    price: 14090,
   },
   {
     id: "Real Mayonnaise",
     name: "Real Mayonnaise",
     image:
       "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_da895e7c-db27-4a47-aeec-7c3c5acf1eda.png",
-    price: 2.99,
+    price: 2099,
   },
   {
-    id: "Basil",
-    name: "Basil",
+    id: "Milk",
+    name: "Milk",
     image:
-      "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_b8073b49-7ed5-4979-b3d0-4eefdb10d95f.jpeg",
-    price: 2.99,
+      "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_0bc08ff6-2154-4e84-8536-60014c507a8d.jpeg",
+    price: 2990,
   },
 ];
 

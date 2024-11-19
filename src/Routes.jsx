@@ -3,7 +3,9 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
+  useLocation,
   Navigate,
+  // Navigate,
 } from "react-router-dom";
 import App from "./App";
 import Layout from "./layout";
@@ -16,15 +18,17 @@ import Settings from "./Dashboard/Settings";
 import { useMyContext } from "./context/MyContext";
 
 const AppRoutes = () => {
-  const { session, user } = useMyContext
-
-  console.log(session, user);
 
 
   const PrivateRoute = ({ children }) => {
-    if (session) {
-      return <Navigate to="/" replace />;
+    const { session } = useMyContext(); // Fix: Add parentheses to hook call
+    const location = useLocation();
+
+    if (!session) {
+      // Redirect to login while saving the attempted URL
+      return <Navigate to="/" replace state={{ from: location }} />;
     }
+
     return children;
   };
 

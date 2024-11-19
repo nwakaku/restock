@@ -8,7 +8,7 @@ import {
 } from "react-icons/lu";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../context/MyContext";
-import supabaseUtil from "../../utils/supabase";
+import supabaseUtil from "../utils/supabase";
 import { useEffect } from "react";
 
 
@@ -35,11 +35,10 @@ const DashboardSidebar = () => {
 
   const { user, setSession } = useMyContext();
 
-  console.log(user);
   
   useEffect(() => {
-    if (!user.user) { navigate("/") }; 
-  }, [user])
+    if (user.user) { navigate("/") };
+  }, []);
   
 
 

@@ -8,58 +8,60 @@ const Stores = () => {
 
   const stores = [
     {
-      name: "Dangote",
+      name: "Cocacola",
+      time: "By 12:30pm",
+      image:
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406562/Coca-Cola_yfvztt.jpg",
+    },
+    {
+      name: "GoldenPenny",
+      time: "By 12:15pm",
+      image:
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406466/goldenpenny_ebcbhl.jpg",
+    },
+    {
+      name: "HoneyWell",
       time: "By 11:22am",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Dangote-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406402/honeywell_s6cquy.png",
     },
     {
       name: "Nestle",
       time: "By 11:45am",
       image:
-        "https://1000logos.net/wp-content/uploads/2017/03/Nestle-Logo-768x432.png",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406359/Nestle-Logo_xmbsay.png",
     },
     {
-      name: "Chivita",
+      name: "Peak Food",
+      time: "By 1:30pm",
+      image:
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406277/Peak_r9dwgu.webp",
+    },
+    {
+      name: "PowerPasta",
       time: "By 12:00pm",
       image:
-        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731344408/dangote_s8las6.svg",
-    },
-    {
-      name: "Cadbury",
-      time: "By 12:15pm",
-      image:
-        "https://1000logos.net/wp-content/uploads/2020/09/Cadbury-Logo-2003.jpg",
-    },
-    {
-      name: "Cocacola",
-      time: "By 12:30pm",
-      image:
-        "https://1000logos.net/wp-content/uploads/2016/11/Shape-Coca-Cola-Logo.jpg",
-    },
-    {
-      name: "Unilever",
-      time: "By 1:00pm",
-      image:
-        "https://1000logos.net/wp-content/uploads/2017/06/Unilever-logo-1024x645.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406239/dufil_nqhv0b.jpg",
     },
     {
       name: "Pepsi",
       time: "By 1:15pm",
       image:
-        "https://1000logos.net/wp-content/uploads/2017/05/Pepsi-logo-768x432.png",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406070/Pepsi1_kvo4lz.jpg",
     },
+
     {
-      name: "ShopRite",
-      time: "By 1:30pm",
+      name: "Unilever",
+      time: "By 1:00pm",
       image:
-        "https://1000logos.net/wp-content/uploads/2024/02/ShopRite-Logo-768x432.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731406009/Unilever-logo_mo5nuu.jpg",
     },
+
     {
       name: "Nigerian B",
       time: "By 2:00pm",
       image:
-        "https://www.top50brandsnigeria.com/wp-content/uploads/2023/08/Nigerian-Breweries-200x200.jpg",
+        "https://res.cloudinary.com/dgbreoalg/image/upload/v1731405954/NB_reiihb.jpg",
     },
   ];
 
