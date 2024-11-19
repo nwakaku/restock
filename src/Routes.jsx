@@ -8,7 +8,7 @@ import {
   // Navigate,
 } from "react-router-dom";
 import App from "./App";
-import Layout from "./layout";
+import Layout from "./layout.jsx";
 import AIList from "./AIList";
 import Dashboard from "./Dashboard/Dashboard";
 import { DashboardHome } from "./Dashboard/DashboardHome";
