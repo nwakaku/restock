@@ -248,8 +248,9 @@ const Header = () => {
               type="search"
             />
           </NavbarItem>
-          <NavbarItem className="lg:hidden ">
-            <Dropdown>
+          {session && (
+            <NavbarItem className="lg:hidden ">
+              <Dropdown>
               <DropdownTrigger>
                 <Button
                   startContent={<LuMapPin size={24} />}
@@ -275,8 +276,9 @@ const Header = () => {
                   </DropdownItem>
                 ))}
               </DropdownMenu>
-            </Dropdown>
-          </NavbarItem>
+              </Dropdown>
+            </NavbarItem>
+          )}
         </NavbarContent>
         <NavbarContent justify="end">
           {session ? (
@@ -379,10 +381,13 @@ const Header = () => {
             <h3 id="modal-title">Welcome to restock.ai</h3>
           </ModalHeader>
           <ModalBody>
-            <Auth
+            <div className="p-2">
+              <Auth
               supabaseClient={supabaseUtil}
               appearance={{ theme: ThemeSupa }}
             />
+            </div>
+            
           </ModalBody>
         </ModalContent>
       </Modal>
