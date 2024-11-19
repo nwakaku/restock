@@ -3,6 +3,7 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
@@ -31,7 +32,7 @@ app.post("/api/generate-list", async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer 12a3f936-d438-4f11-a081-2642ef81ade2`,
+          Authorization: `Bearer ${process.env.SAMBANOVA_API_KEY}`,
           "Content-Type": "application/json",
         },
       }
