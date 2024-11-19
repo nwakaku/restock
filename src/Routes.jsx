@@ -5,10 +5,8 @@ import {
   Routes,
   useLocation,
   Navigate,
-  // Navigate,
 } from "react-router-dom";
 import App from "./App";
-import Layout from "./layout.jsx";
 import AIList from "./AIList";
 import Dashboard from "./Dashboard/Dashboard";
 import { DashboardHome } from "./Dashboard/DashboardHome";
@@ -16,6 +14,7 @@ import { ManageSubscriptions } from "./Dashboard/ManageSubscriptions";
 import { MyOrders } from "./Dashboard/MyOrder";
 import Settings from "./Dashboard/Settings";
 import { useMyContext } from "./context/MyContext";
+import Header from "./components/Header";
 
 const AppRoutes = () => {
 
@@ -34,7 +33,8 @@ const AppRoutes = () => {
 
   return (
     <Router>
-      <Layout>
+      <div className="layout">
+        <Header/>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/aiList" element={<AIList />} />
@@ -51,7 +51,7 @@ const AppRoutes = () => {
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
-      </Layout>
+      </div>
     </Router>
   );
 };
