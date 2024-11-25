@@ -21,25 +21,25 @@ export const suggestedItems = [
     price: 107733,
   },
   {
-    id: "Basil",
-    name: "Basil",
+    id: "Golden Penny Spaghetti",
+    name: "Golden Penny Spaghetti",
     image:
-      "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_b8073b49-7ed5-4979-b3d0-4eefdb10d95f.jpeg",
-    price: 2990,
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/47/5216193/1.jpg?7274",
+    price: 32500,
   },
   {
-    id: "Carrot",
-    name: "Carrot",
+    id: "Pepsi",
+    name: "Pepsi",
     image:
-      "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_369bec92-4389-476b-8e1f-2b0f15698af2.jpeg",
-    price: 5990,
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/64/558928/1.jpg?9338",
+    price: 4200,
   },
   {
-    id: "Oroweat Whole Wheat",
-    name: "Oroweat Whole Wheat",
+    id: "Golden Penny Sugar",
+    name: "Golden Penny Sugar",
     image:
-      "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_f29b39c3-0903-4288-8bd3-f26da58f3242.png",
-    price: 4690,
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/17/8455132/1.jpg?6968",
+    price: 7500,
   },
   {
     id: "Basmatic",
@@ -50,31 +50,31 @@ export const suggestedItems = [
     unit: 12,
   },
   {
-    id: "Lucerne Milk, Whole",
-    name: "Lucerne Milk, Whole",
+    id: "Harpic Toilet Cleaner",
+    name: "Harpic Toilet Cleaner",
     image:
-      "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_61b1f95c-0904-425a-b707-4c3b278be6c6.jpeg",
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/44/181729/1.jpg?7676",
     price: 6990,
   },
   {
-    id: "Chilled Chicken Tenders",
-    name: "Chilled Chicken Tenders",
+    id: "Nestle Maggi",
+    name: "Nestle Maggi",
     image:
-      "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_1950f237-7672-45f6-8d25-ac0dd328988a.jpeg",
-    price: 14090,
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/41/226178/1.jpg?5581",
+    price: 1400,
   },
   {
-    id: "Real Mayonnaise",
-    name: "Real Mayonnaise",
+    id: "Tomatoes",
+    name: "Tomatoes x5",
     image:
-      "https://www.instacart.com/image-server/394x394/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_da895e7c-db27-4a47-aeec-7c3c5acf1eda.png",
-    price: 2099,
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/88/6003093/1.jpg?7164",
+    price: 17000,
   },
   {
-    id: "Milk",
-    name: "Milk",
+    id: "GoldenMorn",
+    name: "GoldenMorn",
     image:
-      "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_0bc08ff6-2154-4e84-8536-60014c507a8d.jpeg",
+      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/21/4801812/1.jpg?6552",
     price: 2990,
   },
 ];
