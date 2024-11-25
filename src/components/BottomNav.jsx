@@ -5,7 +5,7 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t lg:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t lg:hidden ">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-around py-4">
           {[

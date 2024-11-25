@@ -1,9 +1,10 @@
-import { Button, Input } from "@nextui-org/react";
+import { Badge, Button, Input } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import {
   LuArrowRight,
   LuChevronRight,
   LuHome,
+  LuMessageCircle,
   LuPlus,
   LuShoppingCart,
   LuSparkles,
@@ -80,14 +81,22 @@ export const DashboardHome = () => {
   return (
     <div className="lg:ml-64 pt-0">
       {/* Welcome Section */}
-      <div className="px-4 sm:px-6 lg:px-8 py-6 bg-white border-b">
-        <div>
+      <div className="flex px-4 sm:px-6 lg:px-8 py-6 bg-white border-b items-center justify-between">
+        <div >
           <h1 className="text-xl font-bold sm:text-2xl">
             Hey, {user.full_name} 👋
           </h1>
           <p className="text-gray-600 text-sm mt-1 hidden sm:block">
             Ready to create your smart shopping list?
           </p>
+        </div>
+        <div className="lg:hidden flex items-center space-x-2" >
+          <Button className="bg-gray-50" onClick={() => navigate("/dashboard/chat")} isIconOnly>
+            <Badge content="AI" color="success" placement="top-right" size="sm">
+              <LuMessageCircle className="text-gray-600 w-7 h-7"/>
+            </Badge>
+          </Button>
+          
         </div>
       </div>
 

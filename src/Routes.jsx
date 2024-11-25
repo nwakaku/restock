@@ -15,6 +15,7 @@ import { MyOrders } from "./Dashboard/MyOrder";
 import Settings from "./Dashboard/Settings";
 import { useMyContext } from "./context/MyContext";
 import Header from "./components/Header";
+import AIChat from "./Dashboard/AIChat";
 
 const AppRoutes = () => {
 
@@ -47,6 +48,7 @@ const AppRoutes = () => {
             }>
             <Route path="" element={<DashboardHome />} />
             <Route path="orders" element={<MyOrders />} />
+            <Route path="chat" element={<AIChat />} />
             <Route path="subscriptions" element={<ManageSubscriptions />} />
             <Route path="settings" element={<Settings />} />
           </Route>

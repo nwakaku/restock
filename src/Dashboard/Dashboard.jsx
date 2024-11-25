@@ -5,6 +5,7 @@ import {
   LuSettings,
   LuTrendingUp,
   LuLogOut,
+  LuMessagesSquare,
 } from "react-icons/lu";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../context/MyContext";
@@ -45,13 +46,14 @@ const DashboardSidebar = () => {
   const navItems = [
     { icon: LuHome, label: "Dashboard", path: "/dashboard" },
     { icon: LuShoppingCart, label: "My Orders", path: "/dashboard/orders" },
+    { icon: LuMessagesSquare, label: "AI Chat", path: "/dashboard/chat" },
     {
       icon: LuTrendingUp,
       label: "Subscriptions",
       path: "/dashboard/subscriptions",
     },
     { icon: LuSettings, label: "Settings", path: "/dashboard/settings" },
-    { icon: LuLogOut, label: "Logout", path: "/"},
+    { icon: LuLogOut, label: "Logout", path: "/" },
   ];
 
   const handleNavigation = (path) => {

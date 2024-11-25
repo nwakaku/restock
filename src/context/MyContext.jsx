@@ -16,7 +16,7 @@ export const MyContextProvider = ({ children }) => {
   ]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
-    const [showCart, setShowCart] = useState(false);
+    const [showCart, setShowCart] = useState(true);
 
 
   const [cartItems, setCartItems] = useState([

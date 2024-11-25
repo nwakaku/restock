@@ -196,13 +196,15 @@ const Header = () => {
 
   return (
     <>
-      <Navbar maxWidth="2xl" className="py-2 bg-white shadow-md">
+      <Navbar
+        maxWidth="2xl"
+        className="py-2 lg:bg-white bg-[#003D29] shadow-md">
         <NavbarBrand>
           <div className="flex justify-center items-center space-x-2 cursor-pointer">
             <div
               onClick={handleCartClick}
               className="p-2 rounded-xl border-1 border-green-700">
-              <LuMenu size={20} />
+              <LuMenu size={20} className="text-white lg:text-black" />
             </div>
 
             <span className="flex" onClick={handleRoute}>
@@ -251,31 +253,31 @@ const Header = () => {
           {session && (
             <NavbarItem className="lg:hidden ">
               <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  startContent={<LuMapPin size={24} />}
-                  variant="light"
-                  className="capitalize rounded-full font-semibold text-base">
-                  <p>
-                    {selectedValue || "Select State"}{" "}
-                    <span className="hidden lg:block">,Nigeria</span>{" "}
-                  </p>
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                aria-label="Select a state"
-                className="max-h-60 overflow-y-auto text-default-500"
-                variant="flat"
-                disallowEmptySelection
-                selectionMode="single"
-                selectedKeys={selectedKeys}
-                onSelectionChange={handleSelectionChange}>
-                {nigerianStates.map((state) => (
-                  <DropdownItem key={state.id}>
-                    <p className="text-default-500">{state.name}</p>
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
+                <DropdownTrigger>
+                  <Button
+                    startContent={<LuMapPin size={24} />}
+                    variant="light"
+                    className="capitalize rounded-full font-semibold text-base text-white lg:text-black">
+                    <p>
+                      {selectedValue || "Select State"}{" "}
+                      <span className="hidden lg:block">,Nigeria</span>{" "}
+                    </p>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Select a state"
+                  className="max-h-60 overflow-y-auto text-default-500"
+                  variant="flat"
+                  disallowEmptySelection
+                  selectionMode="single"
+                  selectedKeys={selectedKeys}
+                  onSelectionChange={handleSelectionChange}>
+                  {nigerianStates.map((state) => (
+                    <DropdownItem key={state.id}>
+                      <p className="text-default-500">{state.name}</p>
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
               </Dropdown>
             </NavbarItem>
           )}
@@ -349,12 +351,12 @@ const Header = () => {
               </NavbarItem>
             </>
           ) : (
-            <>
-              <NavbarItem className="hidden lg:flex">
+            <div className="flex gap-2">
+              <NavbarItem className=" lg:flex">
                 <Button
                   onPress={onOpen}
                   variant="flat"
-                  className="rounded-full px-12 text-black bg-gray-200">
+                  className="rounded-full w-4 lg:px-12 text-black bg-gray-200">
                   <p>Log in</p>
                 </Button>
               </NavbarItem>
@@ -362,11 +364,11 @@ const Header = () => {
                 <Button
                   onPress={onOpen}
                   variant="flat"
-                  className="rounded-full bg-green-700 px-12 text-white">
+                  className="rounded-full bg-green-700 lg:px-12 text-white">
                   <p>Sign Up</p>
                 </Button>
               </NavbarItem>
-            </>
+            </div>
           )}
         </NavbarContent>
       </Navbar>
@@ -383,11 +385,10 @@ const Header = () => {
           <ModalBody>
             <div className="p-2">
               <Auth
-              supabaseClient={supabaseUtil}
-              appearance={{ theme: ThemeSupa }}
-            />
+                supabaseClient={supabaseUtil}
+                appearance={{ theme: ThemeSupa }}
+              />
             </div>
-            
           </ModalBody>
         </ModalContent>
       </Modal>

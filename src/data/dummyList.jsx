@@ -7,18 +7,18 @@ export const suggestedItems = [
     price: 12990,
   },
   {
-    id: "Garlic",
-    name: "Garlic",
+    id: "Coke",
+    name: "Coke",
     image:
-      "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_ee41b6c1-96dc-4250-a974-9df18382041f.jpeg",
+      "https://www.instacart.com/image-server/234x234/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_565ec8db-1659-485f-aae6-1bc4248b4ec3.jpg",
     price: 1990,
   },
   {
-    id: "Parmesan",
-    name: "Parmesan",
+    id: "Rice",
+    name: "Rice",
     image:
-      "https://www.instacart.com/image-server/514x514/filters:fill(FFF,true):format(jpg)/d2lnr5mha7bycj.cloudfront.net/product-image/file/large_dfe7b80a-72a1-4115-9189-6213f9fda985.jpeg",
-    price: 8990,
+      "https://ng.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/91/335148/1.jpg?2152",
+    price: 107733,
   },
   {
     id: "Basil",

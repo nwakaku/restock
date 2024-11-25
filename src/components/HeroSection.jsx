@@ -10,12 +10,12 @@ const HeroSection = () => {
     }
 
   return (
-    <div className=" bg-green-900 py-2">
+    <div className=" bg-[#003D29] py-2">
       <div className="grid lg:grid-cols-2 px-8 ">
         <div className="text-white justify-center items-center flex">
           <div className="flex flex-col space-y-2 px-4 justify-center items-center lg:items-start">
             <div>
-              <h2 className="text-3xl font-extrabold text-center lg:text-left">
+              <h2 className="lg:text-3xl text-2xl font-extrabold text-center lg:text-left">
                 Never Run Out of Essential Items Again
               </h2>
               <span className="font-normal text-base hidden lg:block">
@@ -24,8 +24,17 @@ const HeroSection = () => {
               </span>
             </div>
 
-            <Button onClick={() => handleRoute()}  size="lg" className="bg-green-600 text-white rounded-full">
+            <Button
+              onClick={handleRoute}
+              size="lg"
+              className="bg-green-600 text-white rounded-full hidden lg:block">
               Generate AI Market List
+            </Button>
+            <Button
+              onClick={handleRoute}
+              size="md"
+              className="bg-green-600 text-white rounded-full lg:hidden">
+              Start
             </Button>
           </div>
         </div>
